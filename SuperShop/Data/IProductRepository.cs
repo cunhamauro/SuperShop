@@ -2,8 +2,7 @@
 
 namespace SuperShop.Data
 {
-    public interface IProductRepository : IGenericRepository<Product>
+    public interface IProductRepository : IGenericRepository<Product> // IProductRepository will implement IGenericRepository specifically for T = Product
     {
-
     }
 }
