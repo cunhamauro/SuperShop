@@ -69,7 +69,7 @@ namespace SuperShop
 
             app.UseRouting();
 
-            app.UseAuthentication();
+            app.UseAuthentication(); // Service to enable user login
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
