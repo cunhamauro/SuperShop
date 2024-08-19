@@ -48,6 +48,7 @@ namespace SuperShop
 
             // Because UserManager is a class from ASP.NET Core, there is no need to create the service
 
+            services.AddHttpContextAccessor(); // To get localhost ip
             services.AddControllersWithViews();
         }
 

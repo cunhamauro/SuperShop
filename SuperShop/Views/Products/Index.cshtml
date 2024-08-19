@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageId)
+                @Html.DisplayNameFor(model => model.ImageUrl)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.LastPurchase)
@@ -47,9 +47,17 @@
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
-                    @if (!string.IsNullOrEmpty(item.ImageFullPath))
+@*                     @if (!string.IsNullOrEmpty(item.ImageFullPath))
                     {
                         <img src="@Url.Content(item.ImageFullPath)" alt="Product image" style="width:100px;height:150px;max-width:100%;height:auto"/>
+                    } *@
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                    <img src="@Url.Content(item.ImageUrl)" alt="Product image" style="width:100px;height:150px;max-width:100%;height:auto"/>
+                    }
+                    else
+                    {
+                        <img src="@Url.Content("")" alt="Product image" style="width:100px;height:150px;max-width:100%;height:auto" />
                     }
                 </td>
                 <td>

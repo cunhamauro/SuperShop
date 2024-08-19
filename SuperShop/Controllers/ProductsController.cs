@@ -71,14 +71,33 @@ namespace SuperShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                Guid imageId = Guid.Empty;
+                //Guid imageId = Guid.Empty;
+
+                var path = string.Empty;
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    imageId = await _blobHelper.UploadBloblAsync(model.ImageFile, "products");
+                    var guid = Guid.NewGuid().ToString();
+                    var file = $"{guid}_{model.Name}.jpg".Replace(" ", "_");
+
+                    path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\products", file);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(stream);
+                    }
+
+                    path = $"~/images/products/{file}";
                 }
 
-                var product = _converterHelper.ToProduct(model, imageId, true);
+                var product = _converterHelper.ToProduct(model, path, true);
+
+                //if (model.ImageFile != null && model.ImageFile.Length > 0)
+                //{
+                //    imageId = await _blobHelper.UploadBloblAsync(model.ImageFile, "products");
+                //}
+
+                //var product = _converterHelper.ToProduct(model, imageId, true);
 
                 //TODO: Change for the user that is logged in
                 product.User = await _userHelper.GetUserByEmailAsync("cunhamauro@outlook.pt");
@@ -152,13 +171,30 @@ namespace SuperShop.Controllers
             {
                 try
                 {
-                    Guid imageId = model.ImageId;
+                    var path = model.ImageUrl;
+
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
-                    {
-                        imageId = await _blobHelper.UploadBloblAsync(model.ImageFile, "products");
+                    { 
+                        var guid = Guid.NewGuid().ToString();
+                        var file = $"{guid}_{model.Name}.jpg".Replace(" ", "_");
+
+                        path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\products", file);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await model.ImageFile.CopyToAsync(stream);
+                        }
+
+                        path = $"~/images/products/{file}";
                     }
 
-                    var product = _converterHelper.ToProduct(model, imageId, false);
+                    //Guid imageId = model.ImageId;
+                    //if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    //{
+                    //    imageId = await _blobHelper.UploadBloblAsync(model.ImageFile, "products");
+                    //}
+
+                    var product = _converterHelper.ToProduct(model, /*imageId*/ path, false);
 
                     //TODO: Change for the user that is logged in
                     product.User = await _userHelper.GetUserByEmailAsync("cunhamauro@outlook.pt");

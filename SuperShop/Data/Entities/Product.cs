@@ -1,7 +1,9 @@
-﻿using System;
+﻿using SuperShop.Migrations;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using static System.Net.WebRequestMethods;
 
 namespace SuperShop.Data.Entities
 {
@@ -17,9 +19,11 @@ namespace SuperShop.Data.Entities
         [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
         public decimal Price { get; set; }
 
-
         [Display(Name = "Image")]
-        public Guid ImageId { get; set; }
+        public string ImageUrl { get; set; }
+
+        //[Display(Name = "Image")]
+        //public Guid ImageId { get; set; }
 
         [Display(Name = "Last Purchase")]
         public DateTime? LastPurchase { get; set; }
@@ -37,6 +41,22 @@ namespace SuperShop.Data.Entities
 
         public User User { get; set; }
 
-        public string ImageFullPath => ImageId == Guid.Empty ? $"https://supershopmc.azurewebsites.net/images/noimage.jpg" : $"https://supershopmc.blob.core.windows.net/products/{ImageId}";
+        //public string ImageFullPath => ImageId == Guid.Empty ? $"https://supershopmc.azurewebsites.net/images/noimage.jpg" : $"https://supershopmc.blob.core.windows.net/products/{ImageId}";
+
+        public string ImageFullPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(ImageUrl))
+                {
+                    return $"https://localhost:44396{"/images/noimage.jpg"}";
+                }
+                else
+                {
+                    return $"https://localhost:44396{ImageUrl.Substring(1)}";
+                }
+
+            } 
+        }
     }
 }

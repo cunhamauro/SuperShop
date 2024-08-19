@@ -15,7 +15,7 @@ namespace SuperShop.Data
 
         public IQueryable GetAllWithUsers()
         {
-            return _context.Products.Include(p => p.User);
+            return _context.Products.Include(p => p.User); // Inner join to return users of products
         }
     }
 }
