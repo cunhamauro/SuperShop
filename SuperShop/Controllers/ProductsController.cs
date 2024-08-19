@@ -18,15 +18,16 @@ namespace SuperShop.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly IUserHelper _userHelper;
-        //private readonly IImageHelper _imageHelper;
-        private readonly IBlobHelper _blobHelper;
+        private readonly IImageHelper _imageHelper;
+        //private readonly IBlobHelper _blobHelper;
         private readonly IConverterHelper _converterHelper;
 
-        public ProductsController(IProductRepository productRepository, IUserHelper userHelper, IBlobHelper blobHelper, IConverterHelper converterHelper)
+        public ProductsController(IProductRepository productRepository, IUserHelper userHelper, /*IBlobHelper blobHelper*/ IImageHelper imageHelper, IConverterHelper converterHelper)
         {
             _productRepository = productRepository;
             _userHelper = userHelper;
-            _blobHelper = blobHelper;
+            _imageHelper = imageHelper;
+            //_blobHelper = blobHelper;
             _converterHelper = converterHelper;
         }
 
@@ -77,17 +78,7 @@ namespace SuperShop.Controllers
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    var guid = Guid.NewGuid().ToString();
-                    var file = $"{guid}_{model.Name}.jpg".Replace(" ", "_");
-
-                    path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\products", file);
-
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await model.ImageFile.CopyToAsync(stream);
-                    }
-
-                    path = $"~/images/products/{file}";
+                    path = await _imageHelper.UploadImageAsync(model.ImageFile, model.Name, "products");
                 }
 
                 var product = _converterHelper.ToProduct(model, path, true);
@@ -139,7 +130,7 @@ namespace SuperShop.Controllers
                 return NotFound();
             }
 
-            var model  = _converterHelper.ToProductViewModel(product);
+            var model = _converterHelper.ToProductViewModel(product);
             return View(model);
         }
 
@@ -174,18 +165,8 @@ namespace SuperShop.Controllers
                     var path = model.ImageUrl;
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
-                    { 
-                        var guid = Guid.NewGuid().ToString();
-                        var file = $"{guid}_{model.Name}.jpg".Replace(" ", "_");
-
-                        path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\products", file);
-
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await model.ImageFile.CopyToAsync(stream);
-                        }
-
-                        path = $"~/images/products/{file}";
+                    {
+                        path = await _imageHelper.UploadImageAsync(model.ImageFile, model.Name, "products");
                     }
 
                     //Guid imageId = model.ImageId;
@@ -241,7 +222,15 @@ namespace SuperShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _productRepository.DeleteAsync(await _productRepository.GetByIdAsync(id));
+            var product = await _productRepository.GetByIdAsync(id);
+
+            if (!string.IsNullOrEmpty(product.ImageUrl))
+            {
+                _imageHelper.DeleteImage(product.ImageUrl);
+            }
+
+            await _productRepository.DeleteAsync(product);
+
             return RedirectToAction(nameof(Index));
         }
     }
