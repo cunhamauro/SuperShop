@@ -1,4 +1,5 @@
-﻿using SuperShop.Migrations;
+﻿using Microsoft.EntityFrameworkCore;
+using SuperShop.Migrations;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -49,13 +50,12 @@ namespace SuperShop.Data.Entities
             {
                 if (string.IsNullOrEmpty(ImageUrl))
                 {
-                    return $"https://localhost:44396{"/images/noimage.jpg"}";
+                    return $"/images/noimage.jpg";
                 }
                 else
                 {
-                    return $"https://localhost:44396{ImageUrl.Substring(1)}";
+                    return $"{ImageUrl.Substring(1)}";
                 }
-
             } 
         }
     }

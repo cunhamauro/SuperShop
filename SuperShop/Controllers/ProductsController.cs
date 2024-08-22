@@ -91,7 +91,7 @@ namespace SuperShop.Controllers
                 //var product = _converterHelper.ToProduct(model, imageId, true);
 
                 //TODO: Change for the user that is logged in
-                product.User = await _userHelper.GetUserByEmailAsync("cunhamauro@outlook.pt");
+                product.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await _productRepository.CreateAsync(product);
                 return RedirectToAction(nameof(Index));
             }
@@ -178,7 +178,7 @@ namespace SuperShop.Controllers
                     var product = _converterHelper.ToProduct(model, /*imageId*/ path, false);
 
                     //TODO: Change for the user that is logged in
-                    product.User = await _userHelper.GetUserByEmailAsync("cunhamauro@outlook.pt");
+                    product.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _productRepository.UpdateAsync(product);
                 }
                 catch (DbUpdateConcurrencyException)

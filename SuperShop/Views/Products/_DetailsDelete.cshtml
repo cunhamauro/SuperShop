@@ -1,5 +1,9 @@
 ﻿@model SuperShop.Data.Entities.Product
 
+@{
+    var currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+}
+
 <hr />
 
 <div class="row">
@@ -47,7 +51,7 @@
     </div>
 
     <div class="col-md-4">
-        <img src="@Url.Content(Model.ImageUrl)" alt="Product image" style="width:300px;height:450px;max-width:100%;height:auto" />
+        <img src="@Url.Content($"{currentUrl}{Model.ImageFullPath}")" alt="Product image" style="width:300px;height:450px;max-width:100%;height:auto" />
     </div>
 
 </div>

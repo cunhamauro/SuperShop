@@ -4,6 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
+@{
+    var currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+}
+
 <h1>Products List</h1>
 
 <p>
@@ -47,18 +51,7 @@
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
-@*                     @if (!string.IsNullOrEmpty(item.ImageFullPath))
-                    {
-                        <img src="@Url.Content(item.ImageFullPath)" alt="Product image" style="width:100px;height:150px;max-width:100%;height:auto"/>
-                    } *@
-                    @if (!string.IsNullOrEmpty(item.ImageUrl))
-                    {
-                    <img src="@Url.Content(item.ImageUrl)" alt="Product image" style="width:100px;height:150px;max-width:100%;height:auto"/>
-                    }
-                    else
-                    {
-                        <img src="@Url.Content("")" alt="Product image" style="width:100px;height:150px;max-width:100%;height:auto" />
-                    }
+                        <img src="@Url.Content($"{currentUrl}{item.ImageFullPath}")" alt="Product image" style="width:100px;height:150px;max-width:100%;height:auto"/>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.LastPurchase)

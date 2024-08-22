@@ -9,7 +9,6 @@ namespace SuperShop.Helpers
     {
         public async Task<string> UploadImageAsync(IFormFile imageFile, string name, string folder)
         {
-
             var guid = Guid.NewGuid().ToString();
             var file = $"{guid}_{name}.jpg".Replace(" ", "_");
 
