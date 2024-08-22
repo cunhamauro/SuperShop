@@ -108,5 +108,77 @@ namespace SuperShop.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> ChangeUser()
+        {
+            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            var model = new ChangeUserViewModel();
+            if (user != null)
+            {
+                model.FirstName = user.FirstName;
+                model.LastName = user.LastName;
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeUser(ChangeUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                if (user != null)
+                {
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+
+                    var response = await _userHelper.UpdateUserAsync(user);
+
+                    if (response.Succeeded)
+                    {
+                        ViewBag.UserMessage = "User updated!";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", response.Errors.FirstOrDefault().Description);
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                if (user != null)
+                {
+                    var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("ChangeUser");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", result.Errors.FirstOrDefault().Description);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "User not found!");
+                }
+            }
+
+            return View(model);
+        }
     }
 }
