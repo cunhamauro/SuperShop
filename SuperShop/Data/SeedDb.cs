@@ -24,6 +24,9 @@ namespace SuperShop.Data
         {
             await _context.Database.EnsureCreatedAsync();
 
+            await _userHelper.CheckRoleAsync("Admin");
+            await _userHelper.CheckRoleAsync("Customer");
+
             var user = await _userHelper.GetUserByEmailAsync("cunhamauro@outlook.pt");
 
             if (user == null)
@@ -42,17 +45,26 @@ namespace SuperShop.Data
                 {
                     throw new InvalidOperationException($"Could not create the user in seeder!");
                 }
+
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
 
-            if (!_context.Products.Any())
+            var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
+
+            if (!isInRole)
             {
-                AddProduct("Samsung S24", user);
-                AddProduct("Razer Deathadder", user);
-                AddProduct("Glorious GMMK Pro", user);
-                AddProduct("MSI GS65", user);
-
-                await _context.SaveChangesAsync();
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
+
+            //if (!_context.Products.Any())
+            //{
+            //    AddProduct("Samsung S24", user);
+            //    AddProduct("Razer Deathadder", user);
+            //    AddProduct("Glorious GMMK Pro", user);
+            //    AddProduct("MSI GS65", user);
+
+            //    await _context.SaveChangesAsync();
+            //}
         }
 
         private void AddProduct(string name, User user)

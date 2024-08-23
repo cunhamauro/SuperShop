@@ -84,7 +84,7 @@ namespace SuperShop.Controllers
 
                     if (result != IdentityResult.Success)
                     {
-                        ModelState.AddModelError("", "User registration failed!");
+                        ModelState.AddModelError(string.Empty, "User registration failed!");
                         return View(model);
                     }
 
@@ -102,7 +102,7 @@ namespace SuperShop.Controllers
                         return RedirectToAction("Index", "Home");
                     }
 
-                    ModelState.AddModelError("", "User login failed!");
+                    ModelState.AddModelError(string.Empty, "User login failed!");
                 }
             }
 
@@ -140,7 +140,7 @@ namespace SuperShop.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("", response.Errors.FirstOrDefault().Description);
+                        ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
                     }
                 }
             }
@@ -169,12 +169,12 @@ namespace SuperShop.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("", result.Errors.FirstOrDefault().Description);
+                        ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("", "User not found!");
+                    ModelState.AddModelError(string.Empty, "User not found!");
                 }
             }
 
