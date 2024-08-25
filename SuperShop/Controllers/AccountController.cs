@@ -80,9 +80,6 @@ namespace SuperShop.Controllers
                         Email = model.Username,
                     };
 
-                    // Created accounts are Customer by default
-                    await _userHelper.AddUserToRoleAsync(user, "Customer");
-
                     var result = await _userHelper.AddUserAsync(user, model.Password);
 
                     if (result != IdentityResult.Success)
@@ -90,6 +87,9 @@ namespace SuperShop.Controllers
                         ModelState.AddModelError(string.Empty, "User registration failed!");
                         return View(model);
                     }
+
+                    // Created accounts are Customer by default
+                    await _userHelper.AddUserToRoleAsync(user, "Customer");
 
                     var loginViewModel = new LoginViewModel
                     {
