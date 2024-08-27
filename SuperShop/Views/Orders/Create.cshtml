@@ -8,7 +8,7 @@
 
 <p>
     <a asp-action="AddProduct" class="btn btn-success">Add Product</a>
-    <a asp-action="ConfirmOrder" class="btn btn-primary" id="btnConfirm">Confirm Order</a>
+    <a asp-action="ConfirmOrder" class="btn btn-primary" id="btnConfirmOrder">Confirm Order</a>
 </p>
 <table class="table">
     <thead>
@@ -53,3 +53,78 @@
         }
     </tbody>
 </table>
+
+<div id="confirmDialog" class="modal fade">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm Order</h4>
+                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to confirm the order ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="btnConfirmYes">Yes</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmNo">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="deleteDialog" class="modal fade">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm Item Delete</h4>
+                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to confirm this item's deletion?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="btnDeleteYes">Yes</button>
+                <button type="button" class="btn btn-danger" id="btnDeleteNo">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnConfirmOrder").click(function () {
+                $("#confirmDialog").modal("show");
+                return false;
+            });
+
+            $("#btnConfirmYes").click(function () {
+                window.location.href = "/Orders/ConfirmOrder"
+            });
+
+            $("#btnConfirmNo").click(function () {
+                $("#confirmDialog").modal("hide");
+                return false;
+            });
+
+            var id = 0;
+
+            $("a[id*=btnDeleteItem]").click(function () {
+                debugger;
+                id = $(this).parent()[0].id;
+                $("#deleteDialog").modal("show");
+                return false;
+            });
+
+            $("#btnDeleteYes").click(function () {
+                window.location.href = "/Orders/DeleteItem/" + id;
+            });
+
+            $("#btnDeleteNo").click(function () {
+                $("#deleteDialog").modal("hide");
+                return false;
+            });
+
+        });
+    </script>
+}
