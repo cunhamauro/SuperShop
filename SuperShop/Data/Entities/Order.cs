@@ -16,10 +16,9 @@ namespace SuperShop.Data.Entities
         [DisplayFormat(DataFormatString = "{0:yyy/MM/dd hh:mm tt}", ApplyFormatInEditMode = false)]
         public DateTime OrderDate {  get; set; }
 
-        [Required]
         [Display(Name = "Delivery Date")]
         [DisplayFormat(DataFormatString = "{0:yyy/MM/dd hh:mm tt}", ApplyFormatInEditMode = false)]
-        public DateTime DeliveryDate { get; set; }
+        public DateTime? DeliveryDate { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:N0}")]
         public int Lines => Items == null ? 0 : Items.Count();
