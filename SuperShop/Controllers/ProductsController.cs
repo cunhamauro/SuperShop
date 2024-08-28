@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SuperShop.Data;
 using SuperShop.Data.Entities;
@@ -223,15 +224,33 @@ namespace SuperShop.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
+            string imageUrl;
 
-            if (!string.IsNullOrEmpty(product.ImageUrl))
+            try
             {
-                _imageHelper.DeleteImage(product.ImageUrl);
+                imageUrl = product.ImageUrl;
+                await _productRepository.DeleteAsync(product);
+
+
+                if (!string.IsNullOrEmpty(imageUrl))
+                {
+                    _imageHelper.DeleteImage(imageUrl);
+                }
+
+                return RedirectToAction(nameof(Index));
             }
+            catch (Exception ex)
+            {
+                if (ex.GetType() == typeof(DbUpdateException) && ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
 
-            await _productRepository.DeleteAsync(product);
+                {
+                    ViewBag.ErrorTitle = $"{product.Name} is being used!";
+                    ViewBag.ErrorMessage = $"{product.Name} can not be deleted because it is included in orders!</br></br>" +
+                        $"Try to first delete all orders that include the product and try again!";
+                }
 
-            return RedirectToAction(nameof(Index));
+                return View("Error");
+            }
         }
 
         public IActionResult ProductNotFound()
