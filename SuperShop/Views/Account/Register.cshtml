@@ -12,31 +12,59 @@
             <div asp-validation-summary="ModelOnly"></div>
 
             <div class="form-group">
-                <label asp-for="FirstName">First Name</label>
+                <label asp-for="FirstName"></label>
                 <input asp-for="FirstName" class="form-control" />
                 <span asp-validation-for="FirstName" class="text-warning"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="LastName">Last Name</label>
+                <label asp-for="LastName"></label>
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-warning"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Username">Username</label>
+                <label asp-for="Username"></label>
                 <input asp-for="Username" class="form-control" />
                 <span asp-validation-for="Username" class="text-warning"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Password">Password</label>
+                <label asp-for="CountryId" class="control-label"></label>
+                <select asp-for="CountryId" asp-items="Model.Countries" class="form-control">
+                    <option value="0">Select a Country</option>
+                </select>
+                <span asp-validation-for="CountryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CityId" class="control-label"></label>
+                <select asp-for="CityId" asp-items="Model.Cities" class="form-control">
+                    <option value="0">Select a City</option>
+                </select>
+                <span asp-validation-for="CityId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-warning"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PhoneNumber"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-warning"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"></label>
                 <input asp-for="Password" type="password" class="form-control" />
                 <span asp-validation-for="Password" class="text-warning"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Confirm">Confirm</label>
+                <label asp-for="Confirm"></label>
                 <input asp-for="Confirm" type="password" class="form-control" />
                 <span asp-validation-for="Confirm" class="text-warning"></span>
             </div>
@@ -53,9 +81,47 @@
     </p>
 </div>
 
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#CountryId").change(function () {
+                var countryId = $("#CountryId").val();  // Get the selected countryId value
 
+                // Only proceed with the AJAX request if the selected countryId is greater than 0
+                if (countryId > 0) {
+                    $("#CityId").empty();
+
+                    $.ajax({
+                        url: '@Url.Action("GetCitiesJsonAsync", "Account")',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { countryId: countryId },
+                        success: function (cities) {
+                            debugger;
+                            $("#CityId").append('<option value="0">Select a City</option>');
+                            $.each(cities, function (i, city) {
+                                $("#CityId").append('<option value="'
+                                    + city.id + '">'
+                                    + city.name + '</option>');
+                            });
+                        },
+                        error: function (ex) {
+                            debugger;
+                            alert('Failed to retrieve cities.' + ex);
+                        }
+                    });
+                } else {
+                    // Clear the City dropdown if countryId is 0 or less
+                    $("#CityId").empty();
+                    $("#CityId").append('<option value="0">Select a City</option>');
+                }
+
+                return false;
+            });
+        });
+    </script>
+}

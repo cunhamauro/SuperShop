@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SuperShop.Data;
 using SuperShop.Data.Entities;
 using SuperShop.Helpers;
 using SuperShop.Models;
@@ -12,10 +13,12 @@ namespace SuperShop.Controllers
     public class AccountController : Controller
     {
         private readonly IUserHelper _userHelper;
+        private readonly ICountryRepository _countryRepository;
 
-        public AccountController(IUserHelper userHelper)
+        public AccountController(IUserHelper userHelper, ICountryRepository countryRepository)
         {
             _userHelper = userHelper;
+            _countryRepository = countryRepository;
         }
 
         [HttpGet]
@@ -60,7 +63,13 @@ namespace SuperShop.Controllers
 
         public IActionResult Register()
         {
-            return View();
+            var model = new RegisterNewUserViewModel
+            {
+                Countries = _countryRepository.GetComboCountries(),
+                Cities = _countryRepository.GetComboCities(0),
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -72,12 +81,18 @@ namespace SuperShop.Controllers
 
                 if (user == null)
                 {
+                    var city = await _countryRepository.GetCityAsync(model.CityId);
+
                     user = new User
                     {
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         UserName = model.Username,
                         Email = model.Username,
+                        Address = model.Address,
+                        PhoneNumber = model.PhoneNumber,
+                        CityId = city.Id,
+                        City = city,
                     };
 
                     var result = await _userHelper.AddUserAsync(user, model.Password);
@@ -120,7 +135,28 @@ namespace SuperShop.Controllers
             {
                 model.FirstName = user.FirstName;
                 model.LastName = user.LastName;
+                model.PhoneNumber = user.PhoneNumber;
+                model.Address = user.Address;
+
+                var city = await _countryRepository.GetCityAsync(user.CityId);
+                if (city != null)
+                {
+                    var country = await _countryRepository.GetCountryAsync(city);
+                    if (country != null)
+                    {
+                        model.CountryId = country.Id;
+                        model.Cities = _countryRepository.GetComboCities(country.Id);
+                        model.Countries = _countryRepository.GetComboCountries();
+                        model.CityId = user.CityId;
+                    }
+                }
             }
+            else
+            {
+                model.Cities = _countryRepository.GetComboCities(model.CountryId);
+                model.Countries = _countryRepository.GetComboCountries();
+            }
+
             return View(model);
         }
 
@@ -130,10 +166,15 @@ namespace SuperShop.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
                 if (user != null)
                 {
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.Address = model.Address;
+                    user.City = await _countryRepository.GetCityAsync(model.CityId);
+                    user.CityId = model.CityId;
 
                     var response = await _userHelper.UpdateUserAsync(user);
 
@@ -187,6 +228,21 @@ namespace SuperShop.Controllers
         public IActionResult NotAuthorized()
         {
             return View();
+        }
+
+        [HttpPost]
+        [Route("Account/GetCitiesJsonAsync")]
+        public async Task<JsonResult> GetCitiesJsonAsync(int countryId)
+        {
+            if (countryId > 0)
+            {
+                var country = await _countryRepository.GetCountryWithCitiesAsync(countryId);
+                return Json(country.Cities.OrderBy(c => c.Name));
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
