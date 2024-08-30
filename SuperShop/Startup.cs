@@ -27,6 +27,8 @@ namespace SuperShop
         {
             services.AddIdentity<User, IdentityRole>(cfg =>
             {
+                cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+                cfg.SignIn.RequireConfirmedEmail = true;
                 cfg.User.RequireUniqueEmail = true;
                 cfg.Password.RequireDigit = false;
                 cfg.Password.RequiredLength = 4;
@@ -34,6 +36,7 @@ namespace SuperShop
                 cfg.Password.RequireUppercase = false;
                 cfg.Password.RequireLowercase = false;
             })
+                .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<DataContext>(); // After this service is implemented (using secure DataContext), continue to use the normal DataContext
 
             services.AddAuthentication().AddCookie().AddJwtBearer(cfg =>
@@ -55,6 +58,8 @@ namespace SuperShop
             services.AddTransient<SeedDb>();
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IImageHelper, ImageHelper>();
+            services.AddScoped<IMailHelper, MailHelper>();
+
             services.AddScoped<IBlobHelper, BlobHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<IProductRepository, ProductRepository>();
