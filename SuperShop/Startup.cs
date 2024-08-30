@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using SuperShop.Data;
 using SuperShop.Data.Entities;
 using SuperShop.Helpers;
+using System.Text;
 
 namespace SuperShop
 {
@@ -33,6 +35,17 @@ namespace SuperShop
                 cfg.Password.RequireLowercase = false;
             })
                 .AddEntityFrameworkStores<DataContext>(); // After this service is implemented (using secure DataContext), continue to use the normal DataContext
+
+            services.AddAuthentication().AddCookie().AddJwtBearer(cfg =>
+            {
+                cfg.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = this.Configuration["Tokens:Issuer"],
+                    ValidAudience = this.Configuration["Tokens:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(this.Configuration["Tokens:Key"]))
+                };
+            });
 
             services.AddDbContext<DataContext>(cfg =>
             {
