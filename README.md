@@ -1,6 +1,6 @@
 # SuperShop
 
-Simple ASP.NET 5 MVC CRUD online shop system using EntityFramework and SQLServer LocalDB
+C# ASP.NET Core MVC CRUD online shop system using EntityFramework and SQLServer LocalDB
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
