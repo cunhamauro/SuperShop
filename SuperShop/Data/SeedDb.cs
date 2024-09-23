@@ -58,7 +58,6 @@ namespace SuperShop.Data
                     UserName = "cunhamauro@outlook.pt",
                     PhoneNumber = "987654321",
                     Address = "Bouro Amares",
-                    CityId = _context.Countries.FirstOrDefault().Cities.FirstOrDefault().Id,
                     City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault(),
                 };
 
