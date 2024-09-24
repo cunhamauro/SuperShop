@@ -7,7 +7,7 @@ namespace SuperShop.Prism.Models
 {
     public class ProductResponse
     {
-        private string Url = @"https://dp6s0q71-44396.uks1.devtunnels.ms";
+        private string Url = App.Current.Resources["UrlAPI"].ToString();
 
         public int Id {  get; set; }
 
@@ -40,6 +40,7 @@ namespace SuperShop.Prism.Models
                     return $"{Url}{ImageUrl.Substring(1)}";
                 }
             }
+            set {; }
         }
     }
 }

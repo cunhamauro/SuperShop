@@ -8,7 +8,7 @@
     <!-- Application resource dictionary -->
         <ResourceDictionary>
             <!--Parameters-->
-            <x:String x:Key="UrlAPI">https://dp6s0q71-44396.uks1.devtunnels.ms</x:String>
+            <x:String x:Key="UrlAPI">https://zf0srcrg-44396.uks1.devtunnels.ms</x:String>
             
             
         </ResourceDictionary>
