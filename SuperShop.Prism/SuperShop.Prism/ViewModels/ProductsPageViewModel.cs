@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
+using SuperShop.Prism.Helpers;
 using SuperShop.Prism.ItemViewModels;
 using SuperShop.Prism.Models;
 using SuperShop.Prism.Services;
@@ -27,7 +28,7 @@ namespace SuperShop.Prism.ViewModels
 
         public ProductsPageViewModel(INavigationService navigationService, IApiService apiService) : base(navigationService)
         {
-            Title = "Products Page";
+            Title = Languages.Products;
             _navigationService = navigationService;
             _apiService = apiService;
             LoadProductsAsync();
@@ -65,7 +66,7 @@ namespace SuperShop.Prism.ViewModels
             {
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "You need an Internet connection", "Accept");
+                    await App.Current.MainPage.DisplayAlert(Languages.Error, Languages.ConnectionError, Languages.Accept);
                 });
                 return;
             }
@@ -74,13 +75,13 @@ namespace SuperShop.Prism.ViewModels
 
             Response response = await _apiService.GetListAsync<ProductResponse>(url, "/Api", "/Products", @"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjdW5oYW1hdXJvQG91dGxvb2sucHQiLCJqdGkiOiI4NGM2MmE1ZC1lMWUyLTRmYjUtOTliZC00OGM1YmZkNTA3MzciLCJleHAiOjE3Mjc3MDcyNTksImlzcyI6ImxvY2FsaG9zdCIsImF1ZCI6InVzZXJzIn0.SDXVQ1fManHQUX82SbNmIka_4rqlqSuNQ3kUmigGy9Q");
 
+            IsRunning = false;
+
             if (!response.IsSuccess)
             {
-                await App.Current.MainPage.DisplayAlert("Error", response.Message, "Accept");
+                await App.Current.MainPage.DisplayAlert(Languages.Error, response.Message, Languages.Accept);
                 return;
             }
-
-            IsRunning = false;
 
             _myProducts = (List<ProductResponse>)response.Result;
             ShowProducts();
