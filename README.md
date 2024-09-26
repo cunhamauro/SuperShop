@@ -1,7 +1,7 @@
 # SuperShop
 
-This project includes the development of a CRUD online shop system using C# with ASP.NET Core MVC, Entity Framework, and SQL Server with LocalDB.<br>
-Additionally, the project introduces the setup of the initial Android and iOS development environments to explore the technology.
+This project involves the development of a CRUD online shop system using C# with ASP.NET Core, Entity Framework, and SQL Server with LocalDB.<br>
+Additionally, the project includes an introduction to Android and iOS development, exploring the Xamarin tool.
 
 _A project developed for learning purposes, part of a Technology & Information Systems Programming Technical Specialization_
 
