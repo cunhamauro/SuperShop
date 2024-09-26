@@ -139,4 +139,16 @@
   <data name="LastSale" xml:space="preserve">
     <value>Última venta</value>
   </data>
+  <data name="Login" xml:space="preserve">
+    <value>Iniciar sesión</value>
+  </data>
+  <data name="ModifyUser" xml:space="preserve">
+    <value>Modificar el usuario</value>
+  </data>
+  <data name="ShowPurchaseHistory" xml:space="preserve">
+    <value>Mostrar historial de compras</value>
+  </data>
+  <data name="ShowShoppingCart" xml:space="preserve">
+    <value>Mostrar carrito de compras</value>
+  </data>
 </root>
